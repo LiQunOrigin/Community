@@ -2,8 +2,10 @@ package com.liqun.community;
 
 import com.liqun.community.dao.DiscussPostMapper;
 import com.liqun.community.dao.LoginTicketMapper;
+import com.liqun.community.dao.MessageMapper;
 import com.liqun.community.entity.DiscussPost;
 import com.liqun.community.entity.LoginTicket;
+import com.liqun.community.entity.Message;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class MapperTests {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
     @Test
     public void testSelectDiscussPosts() {
         List<DiscussPost> list = discussPostMapper.selectDiscussPosts(0, 0, 10);
@@ -61,5 +66,15 @@ public class MapperTests {
         loginTicketMapper.updateStatus("abc", 1);
         loginTicket = loginTicketMapper.selectByTicket("abc");
         System.out.println(loginTicket);
+    }
+
+    @Test
+    public void testSelectMessages(){
+        List<Message> list = messageMapper.selectConversations(111, 0, 20);
+        for (Message message : list) {
+            System.out.println(message);
+        }
+        int count = messageMapper.selectConversationCount(111);
+        System.out.println(count);
     }
 }
