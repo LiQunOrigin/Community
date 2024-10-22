@@ -36,5 +36,10 @@
             and user_id = #{userId}
         </if>
     </select>
+    <select id="selectDiscussPostById" resultType="com.liqun.community.entity.DiscussPost">
+        select <include refid="selectFields"/>
+        from discuss_post
+        where id = #{id}
+    </select>
 
 </mapper>
