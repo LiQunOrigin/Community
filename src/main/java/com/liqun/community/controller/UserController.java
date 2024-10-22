@@ -1,5 +1,6 @@
 package com.liqun.community.controller;
 
+import com.liqun.community.annotation.LoginRequired;
 import com.liqun.community.entity.User;
 import com.liqun.community.service.UserService;
 import com.liqun.community.util.CommunityUtil;
@@ -50,35 +51,37 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }
 
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
         if (headerImage == null) {
-            model.addAttribute("error", "Äú»¹Ã»ÓĞÑ¡ÔñÍ¼Æ¬£¡");
+            model.addAttribute("error", "æ‚¨è¿˜æ²¡æœ‰é€‰æ‹©å›¾ç‰‡ï¼");
             return "/site/setting";
         }
         String fileName = headerImage.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         if (StringUtils.isBlank(suffix)) {
-            model.addAttribute("error", "ÎÄ¼şµÄ¸ñÊ½²»ÕıÈ·£¡");
+            model.addAttribute("error", "æ–‡ä»¶çš„æ ¼å¼ä¸æ­£ç¡®ï¼");
             return "/site/setting";
         }
-        // Éú³ÉËæ»úÎÄ¼şÃû
+        // ç”Ÿæˆéšæœºæ–‡ä»¶å
         fileName = CommunityUtil.generateUUID() + suffix;
-        // È·¶¨ÎÄ¼ş´æ·ÅµÄÂ·¾¶
+        // ç¡®å®šæ–‡ä»¶å­˜æ”¾çš„è·¯å¾„
         File dest = new File(uploadPath + "/" + fileName);
-        // ´æ´¢ÎÄ¼ş
+        // å­˜å‚¨æ–‡ä»¶
         try {
             headerImage.transferTo(dest);
         } catch (IOException e) {
-            logger.error("ÉÏ´«ÎÄ¼şÊ§°Ü£º" + e.getMessage());
-            throw new RuntimeException("ÉÏ´«ÎÄ¼şÊ§°Ü£¬·şÎñÆ÷·¢ÉúÒì³££¡", e);
+            logger.error("ä¸Šä¼ æ–‡ä»¶å¤±è´¥ï¼š" + e.getMessage());
+            throw new RuntimeException("ä¸Šä¼ æ–‡ä»¶å¤±è´¥ï¼ŒæœåŠ¡å™¨å‘ç”Ÿå¼‚å¸¸ï¼", e);
         }
-        // ¸üĞÂµ±Ç°ÓÃ»§µÄÍ·ÏñÂ·¾¶£¨web·ÃÎÊÂ·¾¶£©
+        // æ›´æ–°å½“å‰ç”¨æˆ·çš„å¤´åƒè·¯å¾„ï¼ˆwebè®¿é—®è·¯å¾„ï¼‰
         // http://localhost:8080/community/user/header/xxx.png
         User user = hostHolder.getUser();
         String headerUrl = domain + contextPath + "/user/header/" + fileName;
@@ -88,11 +91,11 @@ public class UserController {
 
     @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
-        // ·şÎñÆ÷´æ·ÅÂ·¾¶
+        // æœåŠ¡å™¨å­˜æ”¾è·¯å¾„
         fileName = uploadPath + "/" + fileName;
-        // ÎÄ¼şºó×º
+        // æ–‡ä»¶åç¼€
         String suffix = fileName.substring(fileName.lastIndexOf("."));
-        // ÏìÓ¦Í¼Æ¬
+        // å“åº”å›¾ç‰‡
         response.setContentType("image/" + suffix);
         try (
                 FileInputStream fis = new FileInputStream(fileName);
@@ -104,7 +107,7 @@ public class UserController {
                 os.write(buffer, 0, b);
             }
         } catch (IOException e) {
-            logger.error("¶ÁÈ¡Í·ÏñÊ§°Ü£º" + e.getMessage());
+            logger.error("è¯»å–å¤´åƒå¤±è´¥ï¼š" + e.getMessage());
         }
 
     }
