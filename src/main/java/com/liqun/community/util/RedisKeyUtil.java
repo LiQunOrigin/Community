@@ -18,6 +18,11 @@ public class RedisKeyUtil {
         return PREFIX_ENTITY_LIKE + SPLIT + entityType + SPLIT + entityId;
     }
     private static final String PREFIX_USER_LIKE = "like:user";
+
+    // 某个用户的赞
+    public static String getUserLikeKey(int userId) {
+        return PREFIX_USER_LIKE + SPLIT + userId;
+    }
     private static final String PREFIX_FOLLOWEE = "followee";
     private static final String PREFIX_FOLLOWER = "follower";
     private static final String PREFIX_KAPTCHA = "kaptcha";
