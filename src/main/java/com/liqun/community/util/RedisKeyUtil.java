@@ -40,9 +40,22 @@ public class RedisKeyUtil {
         return PREFIX_FOLLOWER + SPLIT + entityType + SPLIT + entityId;
     }
 
-    private static final String PREFIX_KAPTCHA = "kaptcha";
-    private static final String PREFIX_TICKET = "ticket";
-    private static final String PREFIX_USER = "user";
+    private static final String PREFIX_KAPTCHA = "kaptcha";//验证码
+
+    // 验证码
+    public static String getKaptchaKey(String owner) {
+        return PREFIX_KAPTCHA + SPLIT + owner;
+    }
+    private static final String PREFIX_TICKET = "ticket";//凭证
+    // 登录凭证的ticket
+    public static String getTicketKey(String ticket) {
+        return PREFIX_TICKET + SPLIT + ticket;
+    }
+    private static final String PREFIX_USER = "user";//用户
+    // 在Redis中存取用户
+    public static String getUserKey(int userId) {
+        return PREFIX_USER + SPLIT + userId;
+    }
     private static final String PREFIX_UV = "uv";
     private static final String PREFIX_DAU = "dau";
 }
