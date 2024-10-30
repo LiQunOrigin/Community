@@ -1,7 +1,9 @@
 package com.liqun.community.controller;
 
+import com.liqun.community.entity.Event;
 import com.liqun.community.entity.Page;
 import com.liqun.community.entity.User;
+import com.liqun.community.event.EventProducer;
 import com.liqun.community.service.FollowService;
 import com.liqun.community.service.UserService;
 import com.liqun.community.util.CommunityConstant;
@@ -37,6 +39,8 @@ public class FollowController {
     private HostHolder hostHolder;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EventProducer eventProducer;
 
     //关注
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
@@ -44,6 +48,15 @@ public class FollowController {
     public String follow(int entityType, int entityId) {
         User user = hostHolder.getUser();
         followService.follow(user.getId(), entityType, entityId);
+
+        // 触发关注事件
+        Event event = new Event()
+                .setTopic(CommunityConstant.TOPIC_FOLLOW)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
         return CommunityUtil.getJSONString(0, "已关注!");
     }
 
