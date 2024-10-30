@@ -34,6 +34,7 @@ public interface MessageMapper {
     int selectNoticeUnreadCount(int userId, String topic);
     //查询某个主题所包含的通知列表
     List<Message> selectNotices(int userId, String topic, int offset, int limit);
-
+    //修改某个主题所包含的通知状态
+    int updateNoticeStatus(List<Integer> ids, int status);
 
 }

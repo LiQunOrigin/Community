@@ -5,32 +5,28 @@ $(function(){
 function publish() {
 	$("#publishModal").modal("hide");
 
-	//»ñÈ¡±êÌâºÍÄÚÈİ
-    var title = $("#recipient-name").val();
-    var content = $("#message-text").val();
-    // ·¢ËÍÒì²½ÇëÇó
-    $.post(
-        CONTEXT_PATH + "/discuss/add",
-        {"title":title,"content":content},
-        function(data){
-            data = $.parseJSON(data);
-			// ÔÚÌáÊ¾¿òÖĞÏÔÊ¾·µ»ØµÄÏûÏ¢
-            $("#hintBody").text(data.msg);
-			// ÏÔÊ¾ÌáÊ¾¿ò
+	// è·å–æ ‡é¢˜å’Œå†…å®¹
+	var title = $("#recipient-name").val();
+	var content = $("#message-text").val();
+	// å‘é€å¼‚æ­¥è¯·æ±‚(POST)
+	$.post(
+		CONTEXT_PATH + "/discuss/add",
+		{"title":title,"content":content},
+		function(data) {
+			data = $.parseJSON(data);
+			// åœ¨æç¤ºæ¡†ä¸­æ˜¾ç¤ºè¿”å›æ¶ˆæ¯
+			$("#hintBody").text(data.msg);
+			// æ˜¾ç¤ºæç¤ºæ¡†
 			$("#hintModal").modal("show");
-			// 2Ãëºó×Ô¶¯Òş²ØÌáÊ¾¿ò
+			// 2ç§’å,è‡ªåŠ¨éšè—æç¤ºæ¡†
 			setTimeout(function(){
 				$("#hintModal").modal("hide");
-	            // Ë¢ĞÂÒ³Ãæ
-				if(data.code === 0)
+				// åˆ·æ–°é¡µé¢
+				if(data.code == 0) {
 					window.location.reload();
+				}
+			}, 2000);
+		}
+	);
 
-			},2000);
-        }
-    );
-
-	$("#hintModal").modal("show");
-	setTimeout(function(){
-		$("#hintModal").modal("hide");
-	}, 2000);
 }

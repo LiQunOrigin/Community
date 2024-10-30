@@ -59,4 +59,21 @@ public class MessageService {
         return messageMapper.updateStatus(ids, 1);
     }
 
+    //查询某个主题下最新的通知
+    public Message selectLatestNotice(int userId, String topic) {
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
+
+    //查询某个主题所包含的通知数量
+    public int selectNoticeCount(int userId, String topic) {
+        return messageMapper.selectNoticeCount(userId, topic);
+    }
+    //查询未读的通知数量
+    public int selectNoticeUnreadCount(int userId, String topic) {
+        return messageMapper.selectNoticeUnreadCount(userId, topic);
+    }
+    //查询某个主题所包含的通知列表
+    public List<Message> selectNotices(int userId, String topic, int offset, int limit) {
+        return messageMapper.selectNotices(userId, topic, offset, limit);
+    }
 }
