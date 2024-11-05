@@ -1,8 +1,11 @@
 package com.liqun.community.event;
 
 import com.alibaba.fastjson.JSONObject;
+import com.liqun.community.entity.DiscussPost;
 import com.liqun.community.entity.Event;
 import com.liqun.community.entity.Message;
+import com.liqun.community.service.DiscussPostService;
+import com.liqun.community.service.ElasticsearchService;
 import com.liqun.community.service.MessageService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,10 @@ public class EventConsumer {
     private static final Logger logger = LoggerFactory.getLogger(EventConsumer.class);
     @Autowired
     private MessageService  messageService;
+    @Autowired
+    private ElasticsearchService elasticsearchService;
+    @Autowired
+    private DiscussPostService discussPostService;
     @KafkaListener(topics={TOPIC_COMMENT, TOPIC_LIKE, TOPIC_FOLLOW})
     public void handleCommentMessage(ConsumerRecord record){
         if(record == null || record.value() == null){
@@ -59,5 +66,20 @@ public class EventConsumer {
         }
         message.setContent(JSONObject.toJSONString(content));
         messageService.insertMessage(message);
+    }
+
+
+    //消费发帖事件
+    @KafkaListener(topics={TOPIC_PUBLISH})
+    public void handlePublishMessage(ConsumerRecord record){
+        if(record == null || record.value() == null){
+            logger.error("消息的内容为空");
+        }
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        if(event == null){
+            logger.error("消息格式错误");
+        }
+        DiscussPost post = discussPostService.findDiscussPostById(event.getEntityId());
+        elasticsearchService.saveDiscussPost(post);
     }
 }
